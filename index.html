@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Japanese Converter</title>
+  <script src="https://unpkg.com/wanakana"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #eef1f6;
+      --text: #0f172a;
+      --muted: #94a3b8;
+      --card-bg: #ffffff;
+      --card-border: #d7dbe2;
+      --input-bg: #ffffff;
+      --input-border: #cbd5e1;
+      --accent: #2563eb;
+      --shadow: 0 18px 40px rgba(15,23,42,0.12);
+      --hint: #94a3b8;
+      --copy-bg: #e5e7eb;
+      --copy-bg-hover: #d1d5db;
+      --copy-icon: #4b5563;
+      --toggle-bg: #e5e7eb;
+      --toggle-knob: #ffffff;
+    }
+
+    body.dark {
+      --bg: #020617;
+      --text: #e5e7eb;
+      --muted: #64748b;
+      --card-bg: #020617;
+      --card-border: #1e293b;
+      --input-bg: #020617;
+      --input-border: #334155;
+      --accent: #38bdf8;
+      --shadow: 0 20px 45px rgba(0,0,0,0.7);
+      --hint: #64748b;
+      --copy-bg: #0f172a;
+      --copy-bg-hover: #1e293b;
+      --copy-icon: #e5e7eb;
+      --toggle-bg: #0f172a;
+      --toggle-knob: #e5e7eb;
+    }
+
+    body {
+      margin: 0;
+      padding: 16px;
+      font-family: "Inter", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .wrapper {
+      background: var(--card-bg);
+      border-radius: 14px;
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow);
+      padding: 24px 22px 20px;
+      width: 100%;
+      max-width: 720px;
+    }
+
+    .header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .title {
+      margin: 0 0 6px;
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+
+    .subtitle {
+      margin: 0;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .theme-toggle {
+      border-radius: 999px;
+      border: none;
+      background: var(--toggle-bg);
+      padding: 4px 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--copy-icon);
+      cursor: pointer;
+      transition: 0.2s;
+      flex-shrink: 0;
+    }
+
+    .theme-toggle:hover {
+      opacity: 0.9;
+    }
+
+    .theme-toggle-knob {
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      background: var(--toggle-knob);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    @media (min-width: 768px) {
+      .form-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      .field--romaji {
+        grid-column: span 3;
+      }
+    }
+
+    .field {
+      width: 100%;
+    }
+
+    .field-inner {
+      position: relative;
+    }
+
+    .input-control {
+      width: 100%;
+      padding: 18px 44px 8px 14px; /* extra top for label, right for copy btn */
+      border-radius: 10px;
+      border: 1px solid var(--input-border);
+      background: var(--input-bg);
+      font-size: 15px;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    .input-control::placeholder {
+      color: transparent; /* untuk floating label */
+    }
+
+    .input-control:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.32);
+    }
+
+    body.dark .input-control:focus {
+      box-shadow: 0 0 0 3px rgba(56,189,248,0.4);
+    }
+
+    .field-label {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 14px;
+      color: var(--muted);
+      pointer-events: none;
+      transition: all 0.18s ease;
+      background: transparent;
+    }
+
+    /* floating: saat fokus atau ada isi */
+    .field-inner:focus-within .field-label,
+    .input-control:not(:placeholder-shown) + .field-label {
+      top: 6px;
+      transform: translateY(0);
+      font-size: 11px;
+      color: var(--accent);
+    }
+
+    .copy-btn {
+      position: absolute;
+      right: 6px;
+      top: 50%;
+      transform: translateY(-50%);
+      border: none;
+      border-radius: 999px;
+      padding: 5px 9px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      cursor: pointer;
+      background: var(--copy-bg);
+      color: var(--copy-icon);
+      transition: 0.18s ease;
+    }
+
+    .copy-btn:hover {
+      background: var(--copy-bg-hover);
+    }
+
+    .copy-btn span {
+      font-size: 12px;
+    }
+
+    .hint {
+      font-size: 11px;
+      color: var(--hint);
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="header">
+      <div>
+        <h1 class="title">Japanese Text Converter</h1>
+        <p class="subtitle">
+          Ketik di Romaji, Hiragana, atau Katakana. Tiga-tiganya saling sinkron.  
+          Tersedia floating label, dark mode, dan tombol copy.
+        </p>
+      </div>
+      <button id="theme-toggle" class="theme-toggle" type="button">
+        <div class="theme-toggle-knob" id="theme-icon">🌙</div>
+        <span id="theme-text">Dark</span>
+      </button>
+    </div>
+
+    <div class="form-grid">
+      <!-- ROMAJI -->
+      <div class="field field--romaji">
+        <div class="field-inner">
+          <input
+            id="romaji-input"
+            class="input-control"
+            type="text"
+            placeholder=" "
+            autocomplete="off"
+          />
+          <label class="field-label" for="romaji-input">Romaji</label>
+          <button class="copy-btn" type="button" data-copy="romaji">
+            <span>📋</span><span class="copy-text">Copy</span>
+          </button>
+        </div>
+        <div class="hint">Ketik huruf latin (romaji). Hiragana & Katakana otomatis mengikuti.</div>
+      </div>
+
+      <!-- HIRAGANA -->
+      <div class="field">
+        <div class="field-inner">
+          <input
+            id="hiragana-input"
+            class="input-control"
+            type="text"
+            placeholder=" "
+            autocomplete="off"
+          />
+          <label class="field-label" for="hiragana-input">Hiragana</label>
+          <button class="copy-btn" type="button" data-copy="hiragana">
+            <span>📋</span><span class="copy-text">Copy</span>
+          </button>
+        </div>
+        <div class="hint">Bisa juga langsung ketik kana di sini, kolom lain akan disesuaikan.</div>
+      </div>
+
+      <!-- KATAKANA -->
+      <div class="field">
+        <div class="field-inner">
+          <input
+            id="katakana-input"
+            class="input-control"
+            type="text"
+            placeholder=" "
+            autocomplete="off"
+          />
+          <label class="field-label" for="katakana-input">Katakana</label>
+          <button class="copy-btn" type="button" data-copy="katakana">
+            <span>📋</span><span class="copy-text">Copy</span>
+          </button>
+        </div>
+        <div class="hint">Kolom ini cocok untuk kata serapan atau penekanan dalam Katakana.</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const romajiInput   = document.getElementById("romaji-input");
+    const hiraganaInput = document.getElementById("hiragana-input");
+    const katakanaInput = document.getElementById("katakana-input");
+    const copyButtons   = document.querySelectorAll(".copy-btn");
+    const themeToggle   = document.getElementById("theme-toggle");
+    const themeIcon     = document.getElementById("theme-icon");
+    const themeText     = document.getElementById("theme-text");
+
+    let lock = false;
+
+    function syncFromRomaji() {
+      if (lock) return;
+      lock = true;
+
+      const rom = romajiInput.value || "";
+      hiraganaInput.value = wanakana.toHiragana(rom);
+      katakanaInput.value = wanakana.toKatakana(rom);
+
+      lock = false;
+    }
+
+    function syncFromHiragana() {
+      if (lock) return;
+      lock = true;
+
+      const hira = wanakana.toHiragana(hiraganaInput.value || "");
+      hiraganaInput.value = hira;
+
+      romajiInput.value   = wanakana.toRomaji(hira);
+      katakanaInput.value = wanakana.toKatakana(hira);
+
+      lock = false;
+    }
+
+    function syncFromKatakana() {
+      if (lock) return;
+      lock = true;
+
+      const kata = wanakana.toKatakana(katakanaInput.value || "");
+      katakanaInput.value = kata;
+
+      romajiInput.value   = wanakana.toRomaji(kata);
+      hiraganaInput.value = wanakana.toHiragana(kata);
+
+      lock = false;
+    }
+
+    romajiInput.addEventListener("input",   syncFromRomaji);
+    hiraganaInput.addEventListener("input", syncFromHiragana);
+    katakanaInput.addEventListener("input", syncFromKatakana);
+
+    // COPY BUTTON
+    function getInputByKey(key) {
+      if (key === "romaji")   return romajiInput;
+      if (key === "hiragana") return hiraganaInput;
+      if (key === "katakana") return katakanaInput;
+      return null;
+    }
+
+    async function handleCopy(btn) {
+      const key   = btn.getAttribute("data-copy");
+      const input = getInputByKey(key);
+      if (!input) return;
+
+      const text = input.value || "";
+      if (!text) {
+        btn.querySelector(".copy-text").textContent = "Empty";
+        setTimeout(() => {
+          btn.querySelector(".copy-text").textContent = "Copy";
+        }, 700);
+        return;
+      }
+
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(text);
+        } else {
+          // fallback
+          const temp = document.createElement("textarea");
+          temp.value = text;
+          document.body.appendChild(temp);
+          temp.select();
+          document.execCommand("copy");
+          document.body.removeChild(temp);
+        }
+        btn.querySelector(".copy-text").textContent = "Copied!";
+        setTimeout(() => {
+          btn.querySelector(".copy-text").textContent = "Copy";
+        }, 1000);
+      } catch (err) {
+        console.error(err);
+        btn.querySelector(".copy-text").textContent = "Error";
+        setTimeout(() => {
+          btn.querySelector(".copy-text").textContent = "Copy";
+        }, 1000);
+      }
+    }
+
+    copyButtons.forEach(btn => {
+      btn.addEventListener("click", () => handleCopy(btn));
+    });
+
+    // THEME TOGGLE
+    function setTheme(dark) {
+      if (dark) {
+        document.body.classList.add("dark");
+        themeIcon.textContent = "☀️";
+        themeText.textContent = "Light";
+        try { localStorage.setItem("theme", "dark"); } catch (_) {}
+      } else {
+        document.body.classList.remove("dark");
+        themeIcon.textContent = "🌙";
+        themeText.textContent = "Dark";
+        try { localStorage.setItem("theme", "light"); } catch (_) {}
+      }
+    }
+
+    // initial theme from localStorage / prefers-color-scheme
+    (function initTheme() {
+      let dark = false;
+      try {
+        const saved = localStorage.getItem("theme");
+        if (saved === "dark") dark = true;
+        else if (saved === "light") dark = false;
+        else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) dark = true;
+      } catch (_) {}
+      setTheme(dark);
+    })();
+
+    themeToggle.addEventListener("click", () => {
+      const isDark = document.body.classList.contains("dark");
+      setTheme(!isDark);
+    });
+  </script>
+</body>
+</html>
