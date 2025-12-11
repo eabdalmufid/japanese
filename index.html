@@ -1,8 +1,30 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Japanese Converter</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  
+  <!-- SEO Meta Tags -->
+  <title>Japanese Text Converter - Romaji, Hiragana, Katakana Converter Online</title>
+  <meta name="description" content="Free online Japanese text converter to transform Romaji to Hiragana and Katakana. Responsive web app with dark mode and real-time synchronization between Japanese writing formats." />
+  <meta name="keywords" content="japanese converter, romaji to hiragana, romaji to katakana, japanese text converter, hiragana converter, katakana converter, wanakana, learn japanese" />
+  <meta name="author" content="eabdalmufid" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://eabdalmufid.github.io/japanese/" />
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://eabdalmufid.github.io/japanese/" />
+  <meta property="og:title" content="Japanese Text Converter - Romaji, Hiragana, Katakana" />
+  <meta property="og:description" content="Free online Japanese text converter to transform Romaji to Hiragana and Katakana with real-time synchronization." />
+  <meta property="og:site_name" content="Japanese Text Converter" />
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:url" content="https://eabdalmufid.github.io/japanese/" />
+  <meta name="twitter:title" content="Japanese Text Converter - Romaji, Hiragana, Katakana" />
+  <meta name="twitter:description" content="Free online Japanese text converter to transform Romaji to Hiragana and Katakana with real-time synchronization." />
+  
   <script src="https://unpkg.com/wanakana"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
@@ -49,7 +71,7 @@
 
     body {
       margin: 0;
-      padding: 16px;
+      padding: 12px;
       font-family: "Inter", system-ui, sans-serif;
       background: var(--bg);
       color: var(--text);
@@ -58,52 +80,120 @@
       align-items: center;
       justify-content: center;
     }
+    
+    @media (min-width: 480px) {
+      body {
+        padding: 16px;
+      }
+    }
+    
+    @media (min-width: 768px) {
+      body {
+        padding: 24px;
+      }
+    }
 
     .wrapper {
       background: var(--card-bg);
-      border-radius: 14px;
+      border-radius: 12px;
       border: 1px solid var(--card-border);
       box-shadow: var(--shadow);
-      padding: 24px 22px 20px;
+      padding: 16px;
       width: 100%;
       max-width: 720px;
+    }
+    
+    @media (min-width: 480px) {
+      .wrapper {
+        border-radius: 14px;
+        padding: 20px;
+      }
+    }
+    
+    @media (min-width: 768px) {
+      .wrapper {
+        padding: 24px 22px 20px;
+      }
     }
 
     .header {
       display: flex;
+      flex-direction: column;
       align-items: flex-start;
-      justify-content: space-between;
       gap: 12px;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
+    }
+    
+    @media (min-width: 480px) {
+      .header {
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 18px;
+      }
     }
 
     .title {
       margin: 0 0 6px;
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 600;
       letter-spacing: 0.01em;
+    }
+    
+    @media (min-width: 480px) {
+      .title {
+        font-size: 20px;
+      }
+    }
+    
+    @media (min-width: 768px) {
+      .title {
+        font-size: 22px;
+      }
     }
 
     .subtitle {
       margin: 0;
-      font-size: 13px;
+      font-size: 12px;
       color: var(--muted);
       line-height: 1.5;
+    }
+    
+    @media (min-width: 480px) {
+      .subtitle {
+        font-size: 13px;
+      }
+    }
+    
+    @media (min-width: 768px) {
+      .subtitle {
+        font-size: 14px;
+      }
     }
 
     .theme-toggle {
       border-radius: 999px;
       border: none;
       background: var(--toggle-bg);
-      padding: 4px 10px;
+      padding: 6px 12px;
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      font-size: 11px;
+      font-size: 12px;
       color: var(--copy-icon);
       cursor: pointer;
       transition: 0.2s;
       flex-shrink: 0;
+      min-height: 48px;
+      align-self: flex-start;
+    }
+    
+    @media (min-width: 480px) {
+      .theme-toggle {
+        padding: 4px 10px;
+        font-size: 11px;
+        min-height: auto;
+      }
     }
 
     .theme-toggle:hover {
@@ -111,14 +201,22 @@
     }
 
     .theme-toggle-knob {
-      width: 18px;
-      height: 18px;
+      width: 20px;
+      height: 20px;
       border-radius: 999px;
       background: var(--toggle-knob);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 11px;
+      font-size: 12px;
+    }
+    
+    @media (min-width: 480px) {
+      .theme-toggle-knob {
+        width: 18px;
+        height: 18px;
+        font-size: 11px;
+      }
     }
 
     .form-grid {
@@ -127,6 +225,15 @@
       gap: 16px;
     }
 
+    @media (min-width: 640px) {
+      .form-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .field--romaji {
+        grid-column: span 2;
+      }
+    }
+    
     @media (min-width: 768px) {
       .form-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -146,14 +253,23 @@
 
     .input-control {
       width: 100%;
-      padding: 18px 44px 8px 14px; /* extra top for label, right for copy btn */
+      padding: 20px 50px 10px 12px; /* extra top for label, right for copy btn */
       border-radius: 10px;
       border: 1px solid var(--input-border);
       background: var(--input-bg);
-      font-size: 15px;
+      font-size: 14px;
       color: var(--text);
       outline: none;
       transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+      min-height: 50px;
+    }
+    
+    @media (min-width: 480px) {
+      .input-control {
+        padding: 18px 44px 8px 14px;
+        font-size: 15px;
+        min-height: auto;
+      }
     }
 
     .input-control::placeholder {
@@ -171,23 +287,38 @@
 
     .field-label {
       position: absolute;
-      left: 14px;
+      left: 12px;
       top: 50%;
       transform: translateY(-50%);
-      font-size: 14px;
+      font-size: 13px;
       color: var(--muted);
       pointer-events: none;
       transition: all 0.18s ease;
       background: transparent;
     }
+    
+    @media (min-width: 480px) {
+      .field-label {
+        left: 14px;
+        font-size: 14px;
+      }
+    }
 
     /* floating: saat fokus atau ada isi */
     .field-inner:focus-within .field-label,
     .input-control:not(:placeholder-shown) + .field-label {
-      top: 6px;
+      top: 8px;
       transform: translateY(0);
-      font-size: 11px;
+      font-size: 10px;
       color: var(--accent);
+    }
+    
+    @media (min-width: 480px) {
+      .field-inner:focus-within .field-label,
+      .input-control:not(:placeholder-shown) + .field-label {
+        top: 6px;
+        font-size: 11px;
+      }
     }
 
     .copy-btn {
@@ -197,7 +328,7 @@
       transform: translateY(-50%);
       border: none;
       border-radius: 999px;
-      padding: 5px 9px;
+      padding: 6px 10px;
       display: inline-flex;
       align-items: center;
       gap: 4px;
@@ -206,6 +337,17 @@
       background: var(--copy-bg);
       color: var(--copy-icon);
       transition: 0.18s ease;
+      min-height: 44px;
+      min-width: 44px;
+      justify-content: center;
+    }
+    
+    @media (min-width: 480px) {
+      .copy-btn {
+        padding: 5px 9px;
+        min-height: auto;
+        min-width: auto;
+      }
     }
 
     .copy-btn:hover {
@@ -219,13 +361,27 @@
     .hint {
       font-size: 11px;
       color: var(--hint);
-      margin-top: 4px;
+      margin-top: 6px;
+      line-height: 1.4;
+    }
+    
+    @media (min-width: 480px) {
+      .hint {
+        font-size: 11px;
+        margin-top: 4px;
+      }
+    }
+    
+    @media (min-width: 768px) {
+      .hint {
+        font-size: 12px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="wrapper">
-    <div class="header">
+  <main class="wrapper" role="main">
+    <header class="header">
       <div>
         <h1 class="title">Japanese Text Converter</h1>
         <p class="subtitle">
@@ -233,13 +389,13 @@
           Tersedia floating label, dark mode, dan tombol copy.
         </p>
       </div>
-      <button id="theme-toggle" class="theme-toggle" type="button">
-        <div class="theme-toggle-knob" id="theme-icon">🌙</div>
+      <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle dark mode">
+        <div class="theme-toggle-knob" id="theme-icon" aria-hidden="true">🌙</div>
         <span id="theme-text">Dark</span>
       </button>
-    </div>
+    </header>
 
-    <div class="form-grid">
+    <form class="form-grid" id="converter-form">
       <!-- ROMAJI -->
       <div class="field field--romaji">
         <div class="field-inner">
@@ -249,10 +405,11 @@
             type="text"
             placeholder=" "
             autocomplete="off"
+            aria-label="Romaji input"
           />
           <label class="field-label" for="romaji-input">Romaji</label>
-          <button class="copy-btn" type="button" data-copy="romaji">
-            <span>📋</span><span class="copy-text">Copy</span>
+          <button class="copy-btn" type="button" data-copy="romaji" aria-label="Copy Romaji text">
+            <span aria-hidden="true">📋</span><span class="copy-text">Copy</span>
           </button>
         </div>
         <div class="hint">Ketik huruf latin (romaji). Hiragana & Katakana otomatis mengikuti.</div>
@@ -267,10 +424,11 @@
             type="text"
             placeholder=" "
             autocomplete="off"
+            aria-label="Hiragana input"
           />
           <label class="field-label" for="hiragana-input">Hiragana</label>
-          <button class="copy-btn" type="button" data-copy="hiragana">
-            <span>📋</span><span class="copy-text">Copy</span>
+          <button class="copy-btn" type="button" data-copy="hiragana" aria-label="Copy Hiragana text">
+            <span aria-hidden="true">📋</span><span class="copy-text">Copy</span>
           </button>
         </div>
         <div class="hint">Bisa juga langsung ketik kana di sini, kolom lain akan disesuaikan.</div>
@@ -285,16 +443,17 @@
             type="text"
             placeholder=" "
             autocomplete="off"
+            aria-label="Katakana input"
           />
           <label class="field-label" for="katakana-input">Katakana</label>
-          <button class="copy-btn" type="button" data-copy="katakana">
-            <span>📋</span><span class="copy-text">Copy</span>
+          <button class="copy-btn" type="button" data-copy="katakana" aria-label="Copy Katakana text">
+            <span aria-hidden="true">📋</span><span class="copy-text">Copy</span>
           </button>
         </div>
         <div class="hint">Kolom ini cocok untuk kata serapan atau penekanan dalam Katakana.</div>
       </div>
-    </div>
-  </div>
+    </form>
+  </main>
 
   <script>
     const romajiInput   = document.getElementById("romaji-input");
@@ -304,8 +463,17 @@
     const themeToggle   = document.getElementById("theme-toggle");
     const themeIcon     = document.getElementById("theme-icon");
     const themeText     = document.getElementById("theme-text");
+    const converterForm = document.getElementById("converter-form");
 
     let lock = false;
+
+    // Prevent form submission
+    if (converterForm) {
+      converterForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        return false;
+      });
+    }
 
     function syncFromRomaji() {
       if (lock) return;
