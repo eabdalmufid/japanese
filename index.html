@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
@@ -395,7 +395,7 @@
       </button>
     </header>
 
-    <form class="form-grid" onsubmit="return false;">
+    <form class="form-grid" id="converter-form">
       <!-- ROMAJI -->
       <div class="field field--romaji">
         <div class="field-inner">
@@ -463,8 +463,17 @@
     const themeToggle   = document.getElementById("theme-toggle");
     const themeIcon     = document.getElementById("theme-icon");
     const themeText     = document.getElementById("theme-text");
+    const converterForm = document.getElementById("converter-form");
 
     let lock = false;
+
+    // Prevent form submission
+    if (converterForm) {
+      converterForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        return false;
+      });
+    }
 
     function syncFromRomaji() {
       if (lock) return;
